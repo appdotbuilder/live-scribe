@@ -1,17 +1,35 @@
+import { db } from '../db';
+import { aiChatMessagesTable } from '../db/schema';
 import { type CreateAiChatMessageInput, type AiChatMessage } from '../schema';
 
-export async function createAiChatMessage(input: CreateAiChatMessageInput): Promise<AiChatMessage> {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is creating a new AI chat message and persisting it in the database.
-    // This will be called when users send messages to the AI or when AI responds.
-    // Should also trigger AI processing when role is 'user'.
-    return Promise.resolve({
-        id: crypto.randomUUID(),
+export const createAiChatMessage = async (input: CreateAiChatMessageInput): Promise<AiChatMessage> => {
+  try {
+    // Serialize context_messages array to JSON string for storage
+    const contextMessagesJson = input.context_messages 
+      ? JSON.stringify(input.context_messages) 
+      : null;
+
+    // Insert AI chat message record
+    const result = await db.insert(aiChatMessagesTable)
+      .values({
         session_id: input.session_id,
         role: input.role,
         content: input.content,
-        context_messages: input.context_messages || [],
-        timestamp: new Date(),
-        created_at: new Date()
-    } as AiChatMessage);
-}
+        context_messages: contextMessagesJson
+      })
+      .returning()
+      .execute();
+
+    // Parse context_messages back to array for response
+    const message = result[0];
+    return {
+      ...message,
+      context_messages: message.context_messages 
+        ? JSON.parse(message.context_messages) 
+        : undefined
+    };
+  } catch (error) {
+    console.error('AI chat message creation failed:', error);
+    throw error;
+  }
+};

@@ -1,8 +1,19 @@
+import { db } from '../db';
+import { transcriptionSessionsTable } from '../db/schema';
 import { type TranscriptionSession } from '../schema';
+import { desc } from 'drizzle-orm';
 
-export async function getTranscriptionSessions(): Promise<TranscriptionSession[]> {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is fetching all transcription sessions from the database.
-    // This will be used to display available sessions in the UI.
-    return Promise.resolve([]);
-}
+export const getTranscriptionSessions = async (): Promise<TranscriptionSession[]> => {
+  try {
+    // Fetch all transcription sessions ordered by creation date (newest first)
+    const result = await db.select()
+      .from(transcriptionSessionsTable)
+      .orderBy(desc(transcriptionSessionsTable.created_at))
+      .execute();
+
+    return result;
+  } catch (error) {
+    console.error('Failed to fetch transcription sessions:', error);
+    throw error;
+  }
+};

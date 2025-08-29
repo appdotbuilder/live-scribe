@@ -1,15 +1,26 @@
+import { db } from '../db';
+import { transcriptionSessionsTable } from '../db/schema';
 import { type CreateTranscriptionSessionInput, type TranscriptionSession } from '../schema';
 
-export async function createTranscriptionSession(input: CreateTranscriptionSessionInput): Promise<TranscriptionSession> {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is creating a new transcription session and persisting it in the database.
-    // This will initialize a new real-time transcription session with the selected audio source.
-    return Promise.resolve({
-        id: crypto.randomUUID(),
+export const createTranscriptionSession = async (input: CreateTranscriptionSessionInput): Promise<TranscriptionSession> => {
+  try {
+    // Insert transcription session record
+    const result = await db.insert(transcriptionSessionsTable)
+      .values({
         title: input.title,
-        status: 'active' as const,
         audio_source: input.audio_source,
-        created_at: new Date(),
-        updated_at: new Date()
-    } as TranscriptionSession);
-}
+        status: 'active', // Default status for new sessions
+      })
+      .returning()
+      .execute();
+
+    // Return the created session
+    const session = result[0];
+    return {
+      ...session,
+    };
+  } catch (error) {
+    console.error('Transcription session creation failed:', error);
+    throw error;
+  }
+};
