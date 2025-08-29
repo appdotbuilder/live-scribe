@@ -3,56 +3,192 @@
 @tailwind utilities;
 
 @layer components {
-  .recording-indicator {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    background-color: rgb(239 68 68);
-    border-radius: 9999px;
-    width: 0.75rem;
-    height: 0.75rem;
+  /* Apple-inspired glassmorphism and smooth animations */
+  .glass-panel {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      0 1px 4px rgba(0, 0, 0, 0.08);
   }
   
+  /* Recording indicator with Apple-style pulse */
+  .recording-indicator {
+    animation: apple-pulse 1.5s ease-in-out infinite;
+    background: linear-gradient(135deg, #ff6b6b, #ff5252);
+    border-radius: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    box-shadow: 0 0 8px rgba(255, 107, 107, 0.6);
+  }
+  
+  @keyframes apple-pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
+  }
+  
+  /* Confidence visualization */
   .confidence-bar {
     height: 0.25rem;
-    background-color: rgb(229 231 235);
+    background: linear-gradient(90deg, #f3f4f6, #e5e7eb);
     border-radius: 9999px;
     overflow: hidden;
   }
   
   .confidence-fill {
     height: 100%;
-    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(90deg, #10b981, #059669, #047857);
+    transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: inherit;
   }
   
-  .session-card-active {
-    ring-width: 2px;
-    ring-color: rgb(59 130 246);
-    background-color: rgb(239 246 255);
+  /* Message fade-in animation */
+  .message-fade-in {
+    animation: fadeInUp 0.4s ease-out;
   }
   
-  .dark .session-card-active {
-    background-color: rgb(12 12 22);
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
+  /* Typing indicator */
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  
+  .typing-dot {
+    width: 4px;
+    height: 4px;
+    background-color: #9ca3af;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+  }
+  
+  .typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes typing {
+    0%, 60%, 100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    30% {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+  }
+  
+  /* Smooth button transitions */
+  .btn-smooth {
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+  }
+  
+  .btn-smooth:hover {
+    transform: translateY(-1px);
+  }
+  
+  .btn-smooth:active {
+    transform: translateY(0);
+  }
+  
+  /* Apple-style gradients */
+  .gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .gradient-success {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  }
+  
+  .gradient-warning {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  }
+  
+  /* Scrollbar styling */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.3);
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.5);
+  }
+  
+  /* Message bubble refinements */
   .message-bubble {
-    max-width: 20rem;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
+    max-width: 75%;
+    padding: 0.75rem 1rem;
+    border-radius: 1.25rem;
     word-wrap: break-word;
+    position: relative;
   }
   
   .message-user {
-    background-color: rgb(59 130 246);
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
     color: white;
     margin-left: auto;
+    border-bottom-right-radius: 0.375rem;
   }
   
   .message-assistant {
-    background-color: rgb(229 231 235);
-    color: rgb(17 24 39);
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    color: #1e293b;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-bottom-left-radius: 0.375rem;
   }
   
-  .dark .message-assistant {
-    background-color: rgb(55 65 81);
-    color: rgb(243 244 246);
+  /* Status badge animations */
+  .status-badge {
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .status-active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+  }
+  
+  .status-paused {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+  }
+  
+  .status-stopped {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: white;
   }
 }
